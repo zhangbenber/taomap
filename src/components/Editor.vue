@@ -23,7 +23,6 @@ export default {
 				let img = new Image()
 				img.onload = () => {
 					this.image = img
-					console.log(this.image)
 				}
 				img.src = url
 			})
