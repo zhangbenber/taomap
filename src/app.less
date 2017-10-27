@@ -1,0 +1,24 @@
+.f-fs { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; }
+.f-scroll { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow-x: hidden; overflow-y: auto; }
+
+.f-ln1 { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.f-ln2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; text-overflow: ellipsis; overflow: hidden; }
+.f-fr { float: right; }
+.f-clear::after { content: '.'; display: block; overflow: hidden; height: 0; clear: both; }
+.f-link { color: @highlightText; border-bottom: 1px dotted @highlightText; cursor: pointer; margin-bottom: -1px; }
+.f-link:hover { color: lighten(@highlightText, 15%); border-color: lighten(@highlightText, 15%); }
+.f-br { white-space: pre-wrap; }
+
+.f-mbm { margin-bottom: 25px; }
+.f-mbn { margin-bottom: 12px; }
+.f-mbs { margin-bottom: 6px; }
+.f-mtb { margin-top: 50px; }
+.f-mtm { margin-top: 25px; }
+.f-mtn { margin-top: 12px; }
+.f-mts { margin-top: 6px; }
+
+.f-sub { color: @subText; }
+.f-fwb { font-weight: bold; }
+.f-tac { text-align: center; }
+.f-tar { text-align: right; }
+.f-big { font-size: 18px; }
