@@ -33,8 +33,8 @@ export default {
 
 			this.$nextTick(() => {
 				if (image) {
-					origin.x = -this.$refs.scroll.scrollLeft
-					origin.y = -this.$refs.scroll.scrollTop
+					origin.x = -this.$refs.scroll.scrollLeft + 25
+					origin.y = -this.$refs.scroll.scrollTop + 25
 					if (image.width * origin.scale < viewport.width) {
 						origin.x = (viewport.width - image.width * origin.scale) / 2
 					}
@@ -73,8 +73,8 @@ export default {
 				origin.scale = result || origin.scale
 			}
 			this.$nextTick(() => {
-				this.$refs.scroll.scrollLeft = zoomCord[0] * origin.scale - zoomPos[0]
-				this.$refs.scroll.scrollTop = zoomCord[1] * origin.scale - zoomPos[1]
+				this.$refs.scroll.scrollLeft = Math.round(zoomCord[0] * origin.scale - zoomPos[0])
+				this.$refs.scroll.scrollTop = Math.round(zoomCord[1] * origin.scale - zoomPos[1])
 				this.resize()
 			})
 		},

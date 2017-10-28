@@ -1,8 +1,9 @@
 <template>
 	<div class="f-fs">
 		<div class="scroll f-fs" ref="scroll" @scroll="resize">
-			<div v-if="viewport && image"
-				:style="{width: `${image.width * origin.scale}px`, height: `${image.height * origin.scale}px`}">
+			<div v-if="viewport && image" :style="{
+					width: `${(image.width * origin.scale < viewport.width) ? 1 : image.width * origin.scale + 50}px`,
+					height: `${(image.height * origin.scale < viewport.height) ? 1 : image.height * origin.scale + 50}px`}">
 			</div>
 		</div>
 		<div :class="['box', {

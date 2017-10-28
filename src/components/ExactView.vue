@@ -14,9 +14,9 @@
 						left: `${~~(viewport.width / 2 - 50)}px`,
 						top: `${~~(viewport.height / 2 - 50)}px`,
 						transform: `translate(${
-							(targetOffset[0] || 0) * origin.scale
+							targetOffset[0] * origin.scale
 						}px, ${
-							(targetOffset[1] || 0) * origin.scale
+							targetOffset[1] * origin.scale
 						}px)`
 					}" />
 			</div>
@@ -39,11 +39,11 @@ export default {
 	},
 
 	data: () => ({
-		targetOffset: [null, null]
+		targetOffset: [0, 0]
 	}),
 
 	methods: {
-		drawTarget(offset = [null, null]) {
+		drawTarget(offset = [0, 0], snapped = [false, false]) {
 			let target = this.$refs.target.getContext('2d')
 			target.lineCap = 'round'
 			
@@ -69,8 +69,7 @@ export default {
 				target.beginPath()
 				target.moveTo(i[0], i[1])
 				target.lineTo(i[2], i[3])
-				let snapped = offset[index % 2] !== null
-				target.strokeStyle = snapped ? '#c00' : '#000'
+				target.strokeStyle = snapped[index % 2] ? '#c00' : '#000'
 				target.stroke()
 			})
 
