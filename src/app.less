@@ -1,14 +1,19 @@
-html { font-size: 13px; }
+@import './common.less';
+	
+html, button { color: @majorText; font-size: 13px; user-select: none; cursor: default; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif }
+a { text-decoration: none; }
 
 .f-fs { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; }
+.f-ct { position: relative; overflow: hidden; }
 .f-scroll { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow-x: hidden; overflow-y: auto; }
 
 .f-ln1 { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .f-ln2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; text-overflow: ellipsis; overflow: hidden; }
 .f-fr { float: right; }
 .f-clear::after { content: '.'; display: block; overflow: hidden; height: 0; clear: both; }
-.f-link { color: @highlightText; border-bottom: 1px dotted @highlightText; cursor: pointer; margin-bottom: -1px; }
-.f-link:hover { color: lighten(@highlightText, 15%); border-color: lighten(@highlightText, 15%); }
+.f-link { display: inline-block; padding: 1px 2px 0 2px; color: @highlightText; border-bottom: 1px dotted @highlightText; cursor: pointer; margin: -1px -2px -1px -2px; }
+.f-link:hover { color: saturate(lighten(@highlightText, 20%),-30%); border-color: saturate(lighten(@highlightText, 20%),-30%); }
+.f-link:active, .f-link:focus { background: @highlightText; color: @majorBackground; border-color: @majorBackground; outline: none; box-shadow: 0 2px @highlightText; }
 .f-br { white-space: pre-wrap; }
 
 .f-mbm { margin-bottom: 25px; }
@@ -26,7 +31,35 @@ html { font-size: 13px; }
 .f-big { font-size: 18px; }
 
 .i-btn {
-	display: inline-block; color: #fff; border-radius: 3px; background: #383838; border: 1px solid #4c4c4c; padding: 6px 10px; cursor: pointer; user-select: none; text-shadow: 0 -1px #000;
-	&:hover { background: #3c3c3c; }
-	&:active { background: #303030; }
+	display: inline-block;
+	color: @buttonText;
+	background: linear-gradient(@buttonBackground, fadeout(@buttonBackground, 3%));
+	border: 1px solid @buttonBorder;
+	border-radius: 2.5px;
+	padding: 6px 10px; 
+	text-shadow: 0 -1px rgba(0,0,0,.8);
+	box-shadow: inset 0 1px rgba(255,255,255,.2), 0 1px rgba(255,255,255,.1);
+	outline: none;
+	text-align: center;
+	&.i-btn-i {
+		line-height:18px;
+		width: 20px;
+		font-size: 16px;
+		padding: 5px;
+		background: none;
+		box-shadow: none;
+		border-color: transparent;
+	}
+	&:hover, &:active, &.active {
+		background: linear-gradient(@buttonHoverBackground, fadeout(@buttonHoverBackground, 3%));
+		box-shadow: inset 0 1px rgba(255,255,255,.2), 0 1px rgba(255,255,255,.1);
+		border: 1px solid @buttonBorder;
+	}
+	&:active, &.active {
+		background: @buttonActiveBackground;
+		box-shadow: inset 0 1px rgba(0,0,0,.08), 0 1px rgba(255,255,255,.08);
+	}
+	&:focus { outline: 1px solid @highlightBorder; }
+	&.i-btn-b { font-size: 14px; padding: 8px 15px; }
+	&.i-btn-s { font-size: 12px; padding: 3px 8px; }
 }

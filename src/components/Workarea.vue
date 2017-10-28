@@ -5,10 +5,12 @@
 				:style="{width: `${image.width * origin.scale}px`, height: `${image.height * origin.scale}px`}">
 			</div>
 		</div>
-		<div class="box" v-if="viewport && image" :style="{
+		<div :class="['box', {
+				hand: mouse.isHand,
+				grabbing: mouse.isHand && mouse.isDown
+			}]" v-if="viewport && image" :style="{
 				width: `${viewport.width}px`,
-				height: `${viewport.height}px`,
-				cursor: mouse.isHand ? 'move' : 'crosshair'
+				height: `${viewport.height}px`
 			}"
 			@keydown.space="mouse.isHand = true" @keyup.space="mouse.isHand = false"
 			@mouseenter="mouse.onScreen = true" @mouseleave="mouse.onScreen = false">
@@ -16,8 +18,9 @@
 				@mousedown="mouseAction" @mousemove="mouseAction" @mouseup="mouseAction" />
 		</div>
 		<div v-else class="load">
-			<p class="f-sub">Start from loading a new image.</p>
-			<span class="i-btn" @click="$emit('load')">Load Image</span>
+			<p>Start from Loading a New Image</p>
+			<button class="i-btn i-btn-b" @click="$emit('load')">Import Image</button>
+			<p><a href="#" class="f-link">Open an existing project</a></p>
 		</div>
 	</div>
 </template>
@@ -203,9 +206,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
+	@import '../common.less';
 	.scroll {
 		overflow: scroll;
-		background: #282828;
+		background: @majorBackground;
+	}
+	.box {
+		cursor: crosshair;
+		&.hand {
+			cursor: grab;
+		}
+		&.grabbing {
+			cursor: grabbing;
+		}
 	}
 	canvas {
 		display: block;
@@ -217,6 +230,6 @@ export default {
 		position: relative;
 		z-index: 1;
 		top: 50%;
-		transform: translateY(-40px);
+		transform: translateY(-65px);
 	}
 </style>
