@@ -43,6 +43,9 @@ export default {
 					}
 
 					this.repaint()
+					if (this.afterResize) {
+						this.afterResize()
+					}
 				}
 			})
 		},
