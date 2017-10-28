@@ -1,15 +1,26 @@
 <template>
 	<div class="self">
 		<ul class="ul">
-			<li class="i-btn i-btn-i active">A</li><li class="i-btn i-btn-i">B</li><li class="i-btn i-btn-i">C</li>
+			<li v-for="i in tools" :key="i.id"
+				:title="`${i.name} (${i.shotcut.toUpperCase()})`"
+				:class="['i-btn i-btn-i', { active: active == i.id }]"
+				@mousedown="$emit('change', i.id)">
+				{{i.icon}}
+			</li>
 		</ul>
 	</div>
 </template>
 
 <script>
+import tools from '../constants/tools'
+
 export default {
 	name: 'ToolBar',
+	props: {
+		active: String
+	},
 	data: () => ({
+		tools
 	}),
 	methods: {
 

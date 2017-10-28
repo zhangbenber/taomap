@@ -6,7 +6,7 @@
 			</li>
 		</ul>
 		<div class="content f-fs">
-
+			<slot :name="tabs[active].slot" />
 		</div>
 	</div>
 </template>

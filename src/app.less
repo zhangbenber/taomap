@@ -1,5 +1,14 @@
 @import './common.less';
-	
+
+@font-face {
+	font-family: 'iconfont';  /* project id 456805 */
+	src: url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.eot');
+	src: url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.eot?#iefix') format('embedded-opentype'),
+	url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.woff') format('woff'),
+	url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.ttf') format('truetype'),
+	url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.svg#iconfont') format('svg');
+}
+
 html, button { color: @majorText; font-size: 13px; user-select: none; cursor: default; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif }
 a { text-decoration: none; }
 
@@ -42,13 +51,15 @@ a { text-decoration: none; }
 	outline: none;
 	text-align: center;
 	&.i-btn-i {
-		line-height:18px;
+		font-family: 'iconfont'!important;
+		line-height: 18px;
 		width: 20px;
-		font-size: 16px;
+		font-size: 17px;
 		padding: 5px;
 		background: none;
 		box-shadow: none;
 		border-color: transparent;
+		color: fadeout(@majorText, 20%);
 	}
 	&:hover, &:active, &.active {
 		background: linear-gradient(@buttonHoverBackground, fadeout(@buttonHoverBackground, 3%));
@@ -58,6 +69,7 @@ a { text-decoration: none; }
 	&:active, &.active {
 		background: @buttonActiveBackground;
 		box-shadow: inset 0 1px rgba(0,0,0,.08), 0 1px rgba(255,255,255,.08);
+		color: @majorText;
 	}
 	&:focus { outline: 1px solid @highlightBorder; }
 	&.i-btn-b { font-size: 14px; padding: 8px 15px; }

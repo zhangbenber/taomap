@@ -1,11 +1,13 @@
 <template>
 	<div class="editor f-fs">
 		<div class="tools panel">
-			<ToolBar />
+			<ToolBar :active="activeTool" @change="activeTool = $event" />
 		</div>
 		<div class="split split-v"></div>		
 		<div class="workarea">
-			<Workarea :image="image" @load="loadImage" />
+			<Workarea :image="image" :active-tool="activeTool"
+				:keyboard-state="keyboardState" @load="loadImage"
+				@move="mouseCord = $event" />
 		</div>
 		<div class="split split-v">
 
@@ -15,6 +17,9 @@
 				<TabPanel :tabs="[
 					{ label: 'Exact View', slot: 'exact-view' }
 				]">
+					<template slot="exact-view">
+						<ExactView :image="image" :pos="mouseCord" />
+					</template>
 				</TabPanel>
 			</div>
 				<div class="split split-h">
@@ -37,14 +42,25 @@ import Workarea from './Workarea'
 import ImagePicker from './ImagePicker'
 import ToolBar from './ToolBar'
 import TabPanel from './TabPanel'
+import ExactView from './ExactView'
+
+import tools from '../constants/tools'
+
 export default {
 	name: 'Editor',
 	components: {
-		Workarea, ImagePicker, ToolBar, TabPanel
+		Workarea, ImagePicker, ToolBar, TabPanel, ExactView
 	},
+
 	data: () => ({
-		image: null
+		image: null,
+		activeTool: 'sel',
+		keyboardState: {
+			space: false
+		},
+		mouseCord: null
 	}),
+
 	methods: {
 		loadImage() {
 			this.$refs.imagePicker.open().then(file => {
@@ -56,7 +72,37 @@ export default {
 				img.src = url
 			})
 		}
-	}
+	},
+
+	mounted() {
+		this.keyboardAction = (e) => {
+			let code = e.keyCode
+			let isDown = (e.type === 'keydown')
+
+			switch (code) {
+				case 32:
+					this.keyboardState.space = isDown
+					break;
+			}
+
+			if (isDown) {
+				let shotcut = String.fromCharCode(code).toLowerCase()
+				let tool = tools.find(i => i.shotcut == shotcut)
+				if (tool) {
+					this.activeTool = tool.id
+				}
+			}
+		}
+
+		window.addEventListener('keydown', this.keyboardAction)
+		window.addEventListener('keyup', this.keyboardAction)
+	},
+
+	beforeDestroy() {
+		window.removeEventListener('keydown', this.keyboardAction)
+		window.removeEventListener('keyup', this.keyboardAction)
+	},
+
 }
 </script>
 

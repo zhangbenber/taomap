@@ -1,23 +1,22 @@
 <template>
-	<div class="f-fs f-tac">
+	<div class="f-fs">
 		<div class="scroll f-fs" ref="scroll" @scroll="resize">
 			<div v-if="viewport && image"
 				:style="{width: `${image.width * origin.scale}px`, height: `${image.height * origin.scale}px`}">
 			</div>
 		</div>
 		<div :class="['box', {
-				hand: mouse.isHand,
-				grabbing: mouse.isHand && mouse.isDown
+				hand: keyboardState.space,
+				grabbing: keyboardState.space && mouse.isDown
 			}]" v-if="viewport && image" :style="{
 				width: `${viewport.width}px`,
 				height: `${viewport.height}px`
 			}"
-			@keydown.space="mouse.isHand = true" @keyup.space="mouse.isHand = false"
 			@mouseenter="mouse.onScreen = true" @mouseleave="mouse.onScreen = false">
 			<canvas :width="viewport.width" :height="viewport.height" ref="canvas"
 				@mousedown="mouseAction" @mousemove="mouseAction" @mouseup="mouseAction" />
 		</div>
-		<div v-else class="load">
+		<div v-else class="load f-tac">
 			<p>Start from Loading a New Image</p>
 			<button class="i-btn i-btn-b" @click="$emit('load')">Import Image</button>
 			<p><a href="#" class="f-link">Open an existing project</a></p>
@@ -26,151 +25,65 @@
 </template>
 
 <script>
+import Painter from '../mixins/Painter'
+
 export default {
 	name: 'Workarea',
+	mixins: [Painter],
 
 	props: {
-		image: HTMLImageElement
+		activeTool: String,
+		keyboardState: Object
 	},
 
 	data: () => ({
-		viewport: null,
-		origin: {
-			x: 0,
-			y: 0,
-			scale: .5
-		},
 		mouse: {
 			onScreen: false,
 			isDown: false,
-			isHand: false,
 			pos: [0, 0]
 		}
 	}),
 
 	methods: {
-		repaint() {
-			if (this.dirty) {
-				return
-			}
-			this.dirty = true
-			this.$nextTick(() => {
-				this.draw()
-			})
-		},
-
-		resize() {
-			let { viewport, origin, image } = this
-
-			this.viewport = {
-				width: this.$refs.scroll.clientWidth,
-				height: this.$refs.scroll.clientHeight
-			}
-			
-			this.$nextTick(() => {
-				if (image) {
-					origin.x = -this.$refs.scroll.scrollLeft
-					origin.y = -this.$refs.scroll.scrollTop
-					if (image.width * origin.scale < viewport.width) {
-						origin.x = (viewport.width - image.width * origin.scale) / 2
-					}
-					if (image.height * origin.scale < viewport.height) {
-						origin.y = (viewport.height - image.height * origin.scale) / 2
-					}
-
-					this.repaint()
-				}
-			})
-		},
-
-		zoom(to) {
-			let { viewport, origin, image, mouse } = this
-			let zoomPos = mouse.onScreen ? mouse.pos : [viewport.width / 2, viewport.height / 2]
-			let zoomCord = [(zoomPos[0] - origin.x) / origin.scale, (zoomPos[1] - origin.y) / origin.scale]
-
-			if (typeof to === 'number') {
-				origin.scale = to
-			} else {
-				let arr = [
-					.01, .015, .02, .025, .1/3, .05, .2/3,
-					.1, .15, .2, .25, 1/3, .5, 2/3,
-					1, 1.5, 2, 2.5, 10/3, 5, 20/3, 10, 15, 20
-				]
-				let result
-				if (to === 'out') {
-					arr.reverse()
-					result = arr.find(i => (i < origin.scale * 0.99))
-				} else {
-					result = arr.find(i => (i > origin.scale * 1.01))
-				}
-				origin.scale = result || origin.scale
-			}
-			this.$nextTick(() => {
-				this.$refs.scroll.scrollLeft = zoomCord[0] * origin.scale - zoomPos[0]
-				this.$refs.scroll.scrollTop = zoomCord[1] * origin.scale - zoomPos[1]
-				this.resize()
-			})
-		},
-
 		mouseAction(e) {
-			let { viewport, origin, image, mouse } = this
+			let { viewport, origin, image, mouse, keyboardState } = this
 
-			let cord = {
-				x: Math.round((e.offsetX - origin.x) / origin.scale),
-				y: Math.round((e.offsetY - origin.y) / origin.scale)
-			}
+			let cord = [
+				Math.round((e.offsetX - origin.x) / origin.scale),
+				Math.round((e.offsetY - origin.y) / origin.scale)
+			]
 
 			let dx = e.offsetX - mouse.pos[0]
 			let dy = e.offsetY - mouse.pos[1]
 			mouse.pos[0] = e.offsetX
 			mouse.pos[1] = e.offsetY
+
+			this.$emit('move', cord)
 			
 			if (e.type === 'mousedown') {
 				mouse.isDown = true
 			} else if (e.type === 'mouseup') {
 				mouse.isDown = false
 			}
-			if (e.type === 'mousemove' && mouse.isDown && mouse.isHand) {
+
+			if (e.type === 'mousemove' && mouse.isDown && keyboardState.space) {
 				this.$refs.scroll.scrollLeft -= dx
 				this.$refs.scroll.scrollTop -= dy
 			}
-		},
+		}
+	},
 
-		draw() {
-			let { viewport, origin, image } = this
-
-			let back = this.$refs.canvas.getContext('2d')
-			back.clearRect(0, 0, viewport.width, viewport.height)
-
-			let imageSmoothingEnabled = origin.scale < 1 || 1
-			back.mozImageSmoothingEnabled = imageSmoothingEnabled
-			back.webkitImageSmoothingEnabled = imageSmoothingEnabled
-			back.msImageSmoothingEnabled = imageSmoothingEnabled
-			back.imageSmoothingEnabled = imageSmoothingEnabled
-			back.imageSmoothingQuality = 'medium'
-
-			let sx = Math.max(0, Math.floor(-origin.x / origin.scale))
-			let sy = Math.max(0, Math.floor(-origin.y / origin.scale))
-			let sw = Math.min(image.width - sx, Math.ceil(viewport.width / origin.scale) + 1)
-			let sh = Math.min(image.height - sy, Math.ceil(viewport.height / origin.scale) + 1)
-			back.drawImage(image, sx, sy, sw, sh,
-				origin.x + sx * origin.scale, origin.y + sy * origin.scale,
-				sw * origin.scale, sh * origin.scale)
-
-			this.dirty = false
-			this.$nextTick(() => {
-				if (this.dirty) {
-					this.draw()
-				}
-			})
+	watch: {
+		'mouse.onScreen': function(on) {
+			if (!on) {
+				this.$emit('move', null)
+			}
 		}
 	},
 
 	mounted() {
 		this.keyboardAction = (e) => {
-			if (e.keyCode === 32) {
-				this.mouse.isHand = (e.type === 'keydown')
-			} else if (e.type === 'keydown') {
+			if (e.type === 'keydown') {
 				if (e.keyCode === 187) {
 					this.zoom('in')
 				} else if (e.keyCode === 189) {
@@ -181,8 +94,6 @@ export default {
 
 		this.resizeListener = (e) => {
 			this.resize()
-			this.resize()
-			// Hmm... Why?
 		}
 
 		window.addEventListener('keydown', this.keyboardAction)
@@ -195,12 +106,6 @@ export default {
 		window.removeEventListener('keydown', this.keyboardAction)
 		window.removeEventListener('keyup', this.keyboardAction)
 		window.removeEventListener('resize', this.resizeListener)
-	},
-
-	watch: {
-		image: function () {
-			this.resize()
-		}
 	}
 }
 </script>
