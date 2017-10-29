@@ -17,7 +17,7 @@
 		</div>
 		<div v-else class="load f-tac">
 			<p>Start from Loading a New Image</p>
-			<button class="i-btn i-btn-b f-mtn f-mbn" @click="dispatch('browseImage')">Import Image</button>
+			<button class="i-btn i-btn-b f-mtn f-mbn" @click="dispatch('browseImage')">Import Image <span class="f-sub">&lt;Ctrl+I&gt;</span></button>
 			<p><a href="#" class="f-link">Open an existing project</a></p>
 		</div>
 	</div>
@@ -64,10 +64,15 @@ export default {
 	mounted() {
 		this.keyEvent = (e, isDown, code) => {
 			if (isDown) {
-				if (code === 187) {
-					this.zoom('in')
-				} else if (code === 189) {
-					this.zoom('out')
+				let zooming = {
+					187: 'in',
+					189: 'out',
+					49: 1,
+					48: 'fit'
+				}[code]
+				if (zooming) {
+					this.zoom(zooming)
+					e.preventDefault()
 				}
 			}
 		}

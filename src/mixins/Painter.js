@@ -58,6 +58,11 @@ export default {
 			]
 			if (typeof to === 'number') {
 				origin.scale = to
+			} else if (to === 'fit') {
+				origin.scale = Math.min(
+					(viewport.height - 20) / image.height,
+					(viewport.width - 20) / image.width
+				)
 			} else {
 				let arr = [
 					.01, .015, .02, .025, .1 / 3, .05, .2 / 3,

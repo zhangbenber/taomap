@@ -46,7 +46,7 @@ export default {
 						shotcut.callback.call(this)
 					}
 				} else {
-					let tool = tools.find(i => i.shotcut == char)
+					let tool = tools.find(i => i.shotcut === char)
 					if (tool) {
 						this.dispatch('changeTool', tool.id)
 					} else {
