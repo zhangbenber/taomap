@@ -1,9 +1,9 @@
 <template>
 	<ul class="self f-scroll">
-		<li v-for="(item, i) in doc.history" :key="i" :class="{
+		<li v-for="(item, i) in doc.history" :key="i" :class="['f-ln1', {
 			active: doc.historyStep == i,
 			invalid: !item.historyMeta.live || doc.historyStep < i
-		}" @click="dispatch('goHistory', i)">
+		}]" @click="dispatch('goHistory', i)">
 			<span class="ico">{{item.historyMeta.icon || ''}}</span>{{item.historyMeta.desc || '< Unkown >'}}
 		</li>
 	</ul>
@@ -25,6 +25,7 @@ export default {
 		border-top: 1px solid @subBorder;
 	}
 	li {
+		height: 20px;
 		padding: 2px 5px;
 		border-bottom: 1px solid @subBorder;
 		cursor: pointer;

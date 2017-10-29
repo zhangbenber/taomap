@@ -10,14 +10,20 @@ let newDocument = () => ({
 
 let store = {
 	activeTool: 'sel',
-	keyboardState: {
-		space: false
-	},
+	auxKey: {},
 	documents: [newDocument()],
 	activeDocument: 0
 }
 
 let actions = {
+	changeTool(tool) {
+		this.store.activeTool = tool
+	},
+
+	auxKey(key, isDown) {
+		this.$set(this.store.auxKey, key, isDown)
+	},
+
 	browseImage() {
 		let input = document.createElement('input')
 		input.type = 'file'
@@ -65,16 +71,16 @@ export default {
 	data: () => ({ store }),
 
 	methods: {
-		dispatch(type, payload) {
+		dispatch(type) {
 			let action = actions[type]
 			if (!action) {
 				console.warn(`Undefined mutation type \`${type}\``)
 			} else {
-				action.call(this, payload)
+				action.apply(this, Array.prototype.slice.call(arguments, 1))
 			}
 		},
 
-		commit(type, payload) {
+		commit(type) {
 			let modifier = modifiers[type]
 			if (!modifier) {
 				console.warn(`Undefined commit type \`${type}\``)
@@ -83,8 +89,9 @@ export default {
 				let { doc } = this
 				let state = clone(doc.state)
 				doc.history = doc.history.slice(0, ++doc.historyStep)
-				
-				let meta = modifier.call(this, state, payload)
+				let payload = Array.prototype.slice.call(arguments, 1)
+				payload.unshift(state)
+				let meta = modifier.apply(this, payload)
 				state.historyMeta = Object.assign({
 					time: new Date().getTime(),
 					live: true

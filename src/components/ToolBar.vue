@@ -3,8 +3,8 @@
 		<ul class="ul">
 			<li v-for="i in tools" :key="i.id"
 				:title="`${i.name} (${i.shotcut.toUpperCase()})`"
-				:class="['i-btn i-btn-i', { active: active == i.id }]"
-				@mousedown="$emit('change', i.id)">
+				:class="['i-btn i-btn-i', { active: store.activeTool == i.id }]"
+				@mousedown="dispatch('changeTool', i.id)">
 				{{i.icon}}
 			</li>
 		</ul>
@@ -16,9 +16,7 @@ import tools from '../constants/tools'
 
 export default {
 	name: 'ToolBar',
-	props: {
-		active: String
-	},
+
 	data: () => ({
 		tools
 	}),

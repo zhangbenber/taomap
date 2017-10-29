@@ -7,8 +7,8 @@
 			</div>
 		</div>
 		<div :class="['box', {
-				hand: keyboardState.space,
-				grabbing: keyboardState.space && mouse.isDown
+				hand: this.store.auxKey.space,
+				grabbing: this.store.auxKey.space && mouse.isDown
 			}]" v-if="viewport && image" :style="{
 				width: `${viewport.width}px`,
 				height: `${viewport.height}px`
@@ -32,11 +32,6 @@ export default {
 	name: 'Workarea',
 	mixins: [Painter],
 
-	props: {
-		activeTool: String,
-		keyboardState: Object
-	},
-
 	data: () => ({
 		mouse: {
 			onScreen: false,
@@ -47,7 +42,8 @@ export default {
 
 	methods: {
 		mouseAction(e) {
-			let { viewport, origin, image, mouse, keyboardState } = this
+			let { viewport, origin, image, mouse, store } = this
+			let { auxKey } = store
 
 			let cord = [
 				Math.round((e.offsetX - origin.x) / origin.scale),
@@ -67,7 +63,7 @@ export default {
 				mouse.isDown = false
 			}
 
-			if (e.type === 'mousemove' && mouse.isDown && keyboardState.space) {
+			if (e.type === 'mousemove' && mouse.isDown && auxKey.space) {
 				this.$refs.scroll.scrollLeft -= dx
 				this.$refs.scroll.scrollTop -= dy
 			}
