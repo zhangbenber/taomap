@@ -13,8 +13,8 @@
 		<div class="side panel">
 			<div class="corner f-ct">
 				<TabPanel :tabs="[
-					{ label: 'Exact View', slot: 'exact-view' },
-					{ label: 'History', slot: 'history' }
+					{ label: i18n('panel.exactview'), slot: 'exact-view' },
+					{ label: i18n('panel.history'), slot: 'history' }
 				]">
 					<template slot="exact-view">
 						<ExactView />
@@ -29,8 +29,8 @@
 				</div>
 			<div class="attr f-ct">
 				<TabPanel :tabs="[
-					{ label: 'Properties', slot: 'porp' },
-					{ label: 'Export', slot: 'export' }
+					{ label: i18n('panel.properties'), slot: 'porp' },
+					{ label: i18n('panel.export'), slot: 'export' }
 				]">
 				</TabPanel>
 			</div>

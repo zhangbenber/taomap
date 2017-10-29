@@ -21,7 +21,7 @@
 					}" />
 			</div>
 			<div  v-else class="load f-tac">
-				<p class="f-sub">&lt; No Images Loaded &gt;</p>
+				<p class="f-sub">{{ i18n('exactview.noimage') }}</p>
 			</div>
 		</div>
 	</div>

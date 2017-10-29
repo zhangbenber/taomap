@@ -4,7 +4,7 @@
 			active: doc.historyStep == i,
 			invalid: !item.historyMeta.live || doc.historyStep < i
 		}]" @click="dispatch('goHistory', i)">
-			<span class="ico">{{item.historyMeta.icon || ''}}</span>{{item.historyMeta.desc || '< Unkown >'}}
+			<span class="ico">{{item.historyMeta.icon || ''}}</span>{{i18n(item.historyMeta.desc || 'history.unknown')}}
 		</li>
 	</ul>
 </template>

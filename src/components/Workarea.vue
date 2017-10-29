@@ -16,9 +16,9 @@
 				@mousedown="mouseAction" @mousemove="mouseAction" @mouseup="mouseAction" />
 		</div>
 		<div v-else class="load f-tac">
-			<p>Start from Loading a New Image</p>
-			<button class="i-btn i-btn-b f-mtn f-mbn" @click="dispatch('browseImage')">Import Image <span class="f-sub">&lt;Ctrl+I&gt;</span></button>
-			<p><a href="#" class="f-link">Open an existing project</a></p>
+			<p>{{ i18n('welcome.start') }}</p>
+			<button class="i-btn i-btn-b f-mtn f-mbn" @click="dispatch('browseImage')">{{ i18n('welcome.import') }} <span class="f-sub">&lt;Ctrl+I&gt;</span></button>
+			<p><a href="#" class="f-link">{{ i18n('welcome.open') }}</a></p>
 		</div>
 	</div>
 </template>

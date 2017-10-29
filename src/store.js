@@ -157,7 +157,7 @@ let modifiers = {
 	loadImage(state, image) {
 		state.image = image
 		return {
-			desc: 'Import Image',
+			desc: 'history.import',
 			icon: '\ue6f0'
 		}
 	},

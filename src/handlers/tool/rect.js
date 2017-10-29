@@ -37,7 +37,7 @@ let mouseEvent = function (e, isDown, pos, delta) {
 	if (isDown === false) {
 		if (interaction) {
 			this.commit('submitInteracting', {
-				desc: 'Create Rect Map Area',
+				desc: 'history.newrect',
 				icon: '\ueb52'
 			})
 			interaction = null
