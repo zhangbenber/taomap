@@ -11,7 +11,8 @@
 				width: `${viewport.width}px`,
 				height: `${viewport.height}px`
 			}" @mouseleave="dispatch('mouse', null)">
-			<canvas :width="viewport.width" :height="viewport.height" ref="canvas"
+			<canvas :width="viewport.width" :height="viewport.height" ref="back" />
+			<canvas :width="viewport.width" :height="viewport.height" ref="front"
 				@mousedown="mouseAction" @mousemove="mouseAction" @mouseup="mouseAction" />
 		</div>
 		<div v-else class="load f-tac">
@@ -61,7 +62,7 @@ export default {
 	},
 
 	mounted() {
-		this.$root.$on('keyEvent', (e, isDown, code) => {
+		this.keyEvent = (e, isDown, code) => {
 			if (isDown) {
 				if (code === 187) {
 					this.zoom('in')
@@ -69,19 +70,22 @@ export default {
 					this.zoom('out')
 				}
 			}
-		})
+		}
 
-		this.$root.$on('resizeEvent', (e) => {
+		this.resizeEvent = (e) => {
 			this.resize()
-		})
-		this.$root.workarea = this
+		}
 
+		this.$root.$on('keyEvent', this.keyEvent)
+		this.$root.$on('resizeEvent', this.resizeEvent)
+		this.$root.workarea = this
+		
 		this.resize()
 	},
 
 	beforeDestroy() {
-		this.$root.$off('keyEvent')
-		this.$root.$off('resizeEvent')
+		this.$root.$off('keyEvent', this.keyEvent)
+		this.$root.$off('resizeEvent', this.resizeEvent)
 		this.$root.workarea = null
 	}
 }

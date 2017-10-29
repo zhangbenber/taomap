@@ -1,14 +1,10 @@
 let mouseEvent = function (e, isDown) {
-	let { store } = this
-	let { auxKey } = store
-
 	if (isDown) {
 		if (!this.$root.workarea) {
 			return
 		}
-		this.$root.workarea.zoom(auxKey.alt ? 'out' : 'in')
+		this.$root.workarea.zoom(this.store.auxKey.alt ? 'out' : 'in')
 	}
-
 }
 
 let keyEvent = function (e, isDown, code, char) {

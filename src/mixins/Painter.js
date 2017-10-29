@@ -81,9 +81,17 @@ export default {
 		},
 
 		draw() {
-			let { viewport, origin, image } = this
+			let toCanvasCord = p => p.map((v, i) =>
+				Math.round(v * this.origin.scale + this.origin[['x', 'y'][i]])
+					+ (this.origin.scale >= 3 ? 0 : 0.5)
+			)
 
-			let back = this.$refs.canvas.getContext('2d')
+			let { viewport, origin, image, doc } = this
+			let { selectedObjects, state } = doc
+
+			// Draw image on `back`
+
+			let back = this.$refs.back.getContext('2d')
 			back.clearRect(0, 0, viewport.width, viewport.height)
 
 			let imageSmoothingEnabled = origin.scale < 1
@@ -101,6 +109,44 @@ export default {
 				origin.x + sx * origin.scale, origin.y + sy * origin.scale,
 				sw * origin.scale, sh * origin.scale)
 
+			// Draw mask on `front`
+
+			let front = this.$refs.front.getContext('2d')
+			front.clearRect(0, 0, viewport.width, viewport.height)
+			front.lineWidth = this.origin.scale >= 3 ? 2 : 1
+
+			// For image map areas
+			front.strokeStyle = '#68c'
+			front.fillStyle = 'rgba(102,136,204,.3)'
+			let points = []
+			state.maps.forEach((map, index) => {
+				let selected = selectedObjects.maps.indexOf(index) > -1
+				front.beginPath()
+				map.poly.forEach((p, i) => {
+					let point = toCanvasCord(p)
+					if (selected) {
+						points.push(point)
+					}
+					if (i == 0) {
+						front.moveTo(point[0], point[1])
+					} else {
+						front.lineTo(point[0], point[1])
+					}
+				})
+				front.closePath()
+				front.fill()
+				front.stroke()
+			})
+
+			// For image map control handlers
+			front.fillStyle = '#57a'
+			let size = this.origin.scale >= 3 ? 10 : 5
+			points.forEach(p => {
+				front.fillRect(p[0] - size / 2, p[1] - size / 2, size, size)
+			})
+
+			
+			
 			this.dirty = false
 			this.$nextTick(() => {
 				if (this.dirty) {

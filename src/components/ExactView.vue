@@ -5,10 +5,10 @@
 					width: `${viewport.width}px`,
 					height: `${viewport.height}px`
 				}" v-show="mouse.onScreen">
-				<canvas :width="viewport.width" :height="viewport.height"
-					ref="canvas" />
+				<canvas :width="viewport.width" :height="viewport.height" ref="back" />
 				<canvas :width="viewport.width" :height="viewport.height"
 					ref="grid" class="grid" />
+				<canvas :width="viewport.width" :height="viewport.height" ref="front" />
 				<canvas width="100" height="100" ref="target" class="target"
 					:style="{
 						left: `${~~(viewport.width / 2 - 50)}px`,

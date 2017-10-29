@@ -1,11 +1,9 @@
 let mouseEvent = function (e, isDown, pos, delta) {
-	let { mouse } = this.doc
-
 	if (isDown === true || isDown === false) {
 		this.dispatch('setCursor', isDown ? 'hand-down' : 'hand')
 	}
 
-	if (mouse.isDown) {
+	if (this.doc.mouse.isDown) {
 		if (!this.$root.workarea) {
 			return
 		}

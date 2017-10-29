@@ -6,7 +6,9 @@ let newDocument = () => ({
 	historyStep: -1,
 	state: {
 		image: null,
-		maps: [],
+		maps: [{
+			poly: [[10, 20], [30, 20], [20, 40]]
+		}],
 		slices: []
 	},
 	mouse: {
@@ -16,6 +18,10 @@ let newDocument = () => ({
 		offset: [0, 0],
 		snapped: [false, false],
 		cursor: ''
+	},
+	selectedObjects: {
+		maps: [],
+		slices: []
 	},
 	action: null
 })
@@ -57,6 +63,7 @@ let actions = {
 		Object.keys(this.store.auxKey).forEach(key => {
 			this.$set(this.store.auxKey, key, false)
 		})
+		this.dispatch('changeTool', this.store.activeTool)
 	},
 
 	mouse(cord, isDown) {
