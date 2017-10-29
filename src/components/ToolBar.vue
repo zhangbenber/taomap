@@ -37,7 +37,6 @@ export default {
 		width: 32px;
 		margin: 0 auto;
 		padding: 5px 0;
-		list-style: none;
 		li {
 			margin: 1px 0;
 		}

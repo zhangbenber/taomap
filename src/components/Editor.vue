@@ -6,19 +6,22 @@
 		<div class="split split-v"></div>		
 		<div class="workarea">
 			<Workarea :image="image" :active-tool="activeTool"
-				:keyboard-state="keyboardState" @load="loadImage"
-				@move="mouseCord = $event" />
+				:keyboard-state="keyboardState" @move="mouseCord = $event" />
 		</div>
 		<div class="split split-v">
 
 		</div>
 		<div class="side panel">
-			<div class="exact-view f-ct">
+			<div class="corner f-ct">
 				<TabPanel :tabs="[
-					{ label: 'Exact View', slot: 'exact-view' }
+					{ label: 'Exact View', slot: 'exact-view' },
+					{ label: 'History', slot: 'history' }
 				]">
 					<template slot="exact-view">
 						<ExactView :image="image" :pos="mouseCord" />
+					</template>
+					<template slot="history">
+						<History />
 					</template>
 				</TabPanel>
 			</div>
@@ -33,27 +36,28 @@
 				</TabPanel>
 			</div>
 		</div>
-		<ImagePicker ref="imagePicker" />
 	</div>
 </template>
 
 <script>
 import Workarea from './Workarea'
-import ImagePicker from './ImagePicker'
 import ToolBar from './ToolBar'
 import TabPanel from './TabPanel'
 import ExactView from './ExactView'
+import History from './History'
 
 import tools from '../constants/tools'
 
 export default {
 	name: 'Editor',
+	porps: {
+		doc: Object
+	},
 	components: {
-		Workarea, ImagePicker, ToolBar, TabPanel, ExactView
+		Workarea, ToolBar, TabPanel, ExactView, History
 	},
 
 	data: () => ({
-		image: null,
 		activeTool: 'sel',
 		keyboardState: {
 			space: false
@@ -61,16 +65,9 @@ export default {
 		mouseCord: null
 	}),
 
-	methods: {
-		loadImage() {
-			this.$refs.imagePicker.open().then(file => {
-				let url = URL.createObjectURL(file)
-				let img = new Image()
-				img.onload = () => {
-					this.image = img
-				}
-				img.src = url
-			})
+	computed: {
+		image() {
+			return this.doc.state.image || null
 		}
 	},
 
@@ -108,6 +105,7 @@ export default {
 
 <style lang="less" scoped>
 	@import '../common.less';
+	
 	.editor {
 		display: flex;
 		border: solid @majorBorder;
@@ -149,7 +147,7 @@ export default {
 		display: flex;
 		flex-direction: column;
 	}
-	.exact-view {
+	.corner {
 		flex: none;
 		height: 250px;
 	}

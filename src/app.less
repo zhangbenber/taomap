@@ -1,20 +1,30 @@
 @import './common.less';
 
 @font-face {
-	font-family: 'iconfont';  /* project id 456805 */
-	src: url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.eot');
-	src: url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.eot?#iefix') format('embedded-opentype'),
-	url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.woff') format('woff'),
-	url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.ttf') format('truetype'),
-	url('//at.alicdn.com/t/font_456805_6dip3bj8fcxtuik9.svg#iconfont') format('svg');
+  font-family: 'iconfont';  /* project id 456805 */
+  src: url('//at.alicdn.com/t/font_456805_8n8f3jhono7xpqfr.eot');
+  src: url('//at.alicdn.com/t/font_456805_8n8f3jhono7xpqfr.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_456805_8n8f3jhono7xpqfr.woff') format('woff'),
+  url('//at.alicdn.com/t/font_456805_8n8f3jhono7xpqfr.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_456805_8n8f3jhono7xpqfr.svg#iconfont') format('svg');
 }
 
-html, button { color: @majorText; font-size: 13px; user-select: none; cursor: default; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif }
-a { text-decoration: none; }
+html, body { padding: 0; margin: 0; color: @majorText; word-wrap: break-word; word-break: break-word; font-size: 13px; background: @majorBackground; user-select: none; }
+#app, h1, h2, h3, h4, h5, h6, hr, p, dl, dt, dd, ul, ol, li, a, th, button, input, textarea, select, pre { padding: 0; margin: 0; font-size: inherit; font-weight: normal; color: inherit; line-height: 20px; cursor: default; }
+body, button, input, select, textarea, pre { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+ul, ol { list-style: none; }
+a, a:hover { text-decoration: none; }
+input[type="text"] { width: 200px; cursor: auto; }
+textarea { resize: none; cursor: auto; }
+input:focus, select:focus, textarea:focus, button:focus { outline: none; }
+img { border: none; }
+pre { white-space: pre-wrap; word-wrap: break-word; }
+::-webkit-input-placeholder { color: @subText; }
+:disabled { background: none; opacity: .3; }
 
 .f-fs { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; }
 .f-ct { position: relative; overflow: hidden; }
-.f-scroll { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow-x: hidden; overflow-y: auto; }
+.f-scroll { position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow-x: hidden; overflow-y: scroll; }
 
 .f-ln1 { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .f-ln2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; text-overflow: ellipsis; overflow: hidden; }

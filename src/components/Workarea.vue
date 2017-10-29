@@ -19,7 +19,7 @@
 		</div>
 		<div v-else class="load f-tac">
 			<p>Start from Loading a New Image</p>
-			<button class="i-btn i-btn-b" @click="$emit('load')">Import Image</button>
+			<button class="i-btn i-btn-b f-mtn f-mbn" @click="dispatch('browseImage')">Import Image</button>
 			<p><a href="#" class="f-link">Open an existing project</a></p>
 		</div>
 	</div>
@@ -113,6 +113,7 @@ export default {
 
 <style lang="less" scoped>
 	@import '../common.less';
+	
 	.scroll {
 		overflow: scroll;
 		background: @majorBackground;

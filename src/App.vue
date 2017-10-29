@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<Editor />
+		<Editor :doc="doc" />
 	</div>
 </template>
 
@@ -9,6 +9,7 @@ import Editor from './components/Editor'
 
 export default {
 	name: 'App',
+	
 	components: {
 		Editor
 	}

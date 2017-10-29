@@ -157,6 +157,6 @@ export default {
 		position: relative;
 		z-index: 1;
 		top: 50%;
-		transform: translateY(-25px);
+		transform: translateY(-10px);
 	}
 </style>

@@ -31,16 +31,14 @@ export default {
 
 <style lang="less" scoped>
 	@import '../common.less';
+
 	.self {
 		height: 100%;
 	}
 	.tab {
 		overflow: hidden;
 		height: 24px;
-		margin: 0;
-		padding: 0;
 		width: 100%;
-		list-style: none;
 		background: linear-gradient(lighten(@majorBackground, 3%), lighten(@majorBackground, 1%));
 		box-shadow:
 			inset 0 1px rgba(255,255,255,.075),
