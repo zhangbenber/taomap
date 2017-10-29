@@ -62,6 +62,10 @@ export default {
 				box-shadow: inset 0 1px rgba(255,255,255,.075);
 				color: @majorText;
 			}
+			[dir=rtl] & {
+				border-right: none;
+				border-left: 1px solid @majorBorder;
+			}
 		}
 	}
 	.content {

@@ -1,5 +1,5 @@
 <template>
-	<div id="app">
+	<div id="app" dir="rtl">
 		<Editor :doc="doc" />
 	</div>
 </template>

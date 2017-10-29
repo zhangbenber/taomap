@@ -1,2 +1,2 @@
-import locale from './zh-CN'
+import locale from './ar-SA'
 export default key => locale[key] || `__${key}__`

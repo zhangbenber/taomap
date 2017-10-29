@@ -37,7 +37,7 @@ export default {
 			color: @subText;
 			font-style: italic;
 		}
-		span {
+		.ico {
 			font-family: 'iconfont'!important;
 			display: inline-block;
 			text-align: center;
@@ -48,6 +48,7 @@ export default {
 			text-shadow: 0 -1px #000;
 			opacity: .7;
 			font-style: normal;
+			[dir=rtl] & { margin: 0 0 0 4px; transform: scaleX(-1); }
 		}
 	}
 </style>

@@ -70,6 +70,7 @@ pre { white-space: pre-wrap; word-wrap: break-word; }
 		box-shadow: none;
 		border-color: transparent;
 		color: fadeout(@majorText, 20%);
+		[dir=rtl] & { transform: scaleX(-1); }
 	}
 	&:hover, &:active, &.active {
 		background: linear-gradient(@buttonHoverBackground, fadeout(@buttonHoverBackground, 3%));
@@ -90,6 +91,7 @@ pre { white-space: pre-wrap; word-wrap: break-word; }
 	background: lighten(@majorBackground, 5%);
 	border-radius: 2.5px;
 	&:vertical { box-shadow: inset 1px 0 @majorBackground; }
+	[dir=rtl] &:vertical { box-shadow: inset -1px 0 @majorBackground; }
 	&:horizontal { box-shadow: inset 0 1px @majorBackground; }
 }
 ::-webkit-scrollbar {
@@ -102,6 +104,7 @@ pre { white-space: pre-wrap; word-wrap: break-word; }
 	border-radius: 2.5px;
 	border: 1px solid @majorBackground;
 	&:vertical { background: linear-gradient(left, lighten(@subBackground, 20%), lighten(@subBackground, 5%)); border-right: 0; }
+	[dir=rtl] &:vertical { background: linear-gradient(right, lighten(@subBackground, 20%), lighten(@subBackground, 5%)); border-right: 1px solid @majorBackground; border-left: 0; }
 	&:horizontal { background: linear-gradient(lighten(@subBackground, 20%), lighten(@subBackground, 5%)); border-bottom: 0; }
 }
 ::-webkit-scrollbar-corner {

@@ -11,8 +11,8 @@
 				width: `${viewport.width}px`,
 				height: `${viewport.height}px`
 			}" @mouseleave="dispatch('mouse', null)">
-			<canvas :width="viewport.width" :height="viewport.height" ref="back" />
-			<canvas :width="viewport.width" :height="viewport.height" ref="front"
+			<canvas class="area" :width="viewport.width" :height="viewport.height" ref="back" />
+			<canvas class="area" :width="viewport.width" :height="viewport.height" ref="front"
 				@mousedown="mouseAction" @mousemove="mouseAction" @mouseup="mouseAction" />
 		</div>
 		<div v-else class="load f-tac">
@@ -116,6 +116,9 @@ export default {
 		position: absolute;
 		left: 0;
 		top: 0;
+		[dir=rtl] &.area {
+			right: 0;
+		}
 	}
 	.load {
 		position: relative;
