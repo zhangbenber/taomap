@@ -1,4 +1,5 @@
 import clone from 'deep-clone'
+import * as toolHandlers from './handlers/tool'
 
 let newDocument = () => ({
 	history: [],
@@ -13,7 +14,8 @@ let newDocument = () => ({
 		isDown: false,
 		cord: null,
 		offset: [0, 0],
-		snapped: [false, false]
+		snapped: [false, false],
+		cursor: ''
 	},
 	action: null
 })
@@ -27,7 +29,24 @@ let store = {
 
 let actions = {
 	auxKey(key, isDown) {
+		if (this.store.auxKey[key] == isDown) {
+			return
+		}
 		this.$set(this.store.auxKey, key, isDown)
+		if (key == 'space') {
+			let oldHandler = toolHandlers[this.store.activeTool]
+			if (isDown) {
+				if (oldHandler && oldHandler.suspend) {
+					oldHandler.suspend.call(this)
+				}
+				toolHandlers.hand.active.call(this)
+			} else {
+				toolHandlers.hand.deactive.call(this)
+				if (oldHandler && oldHandler.active) {
+					oldHandler.active.call(this)
+				}
+			}
+		}
 	},
 
 	escapeState() {
@@ -54,6 +73,10 @@ let actions = {
 		}
 	},
 
+	setCursor(cursor) {
+		this.doc.mouse.cursor = cursor
+	},
+
 	adjustCursor(offset) {
 		let { mouse } = this.doc
 		mouse.offset = mouse.offset.map((o, i) => Math.min(Math.max(o + offset[i], -5), 5))
@@ -61,7 +84,18 @@ let actions = {
 	},
 
 	changeTool(tool) {
+		let oldHandler = toolHandlers[this.store.activeTool]
+		if (oldHandler && oldHandler.suspend) {
+			oldHandler.suspend.call(this)
+		}
+		if (oldHandler && oldHandler.deactive) {
+			oldHandler.deactive.call(this)
+		}
 		this.store.activeTool = tool
+		let newHandler = toolHandlers[tool]
+		if (newHandler && newHandler.active) {
+			newHandler.active.call(this)
+		}
 	},
 
 	browseImage() {

@@ -20,12 +20,12 @@ export default {
 	
 	mounted() {
 		this.keyboardListener = (e) => {
-			this.$root.$emit('keyEvent', e)
-
 			let isDown = (e.type === 'keydown')
 			let code = e.keyCode
 			let char = String.fromCharCode(code).toLowerCase()
-			
+			if (code == 18) {
+				e.preventDefault()
+			}
 			let auxKey = auxKeys[code]
 			if (auxKey) {
 				this.dispatch('auxKey', auxKey, isDown)
@@ -58,9 +58,11 @@ export default {
 					}
 				}
 			}
+
+			this.$root.$emit('keyEvent', e, isDown, code, char)
 		}
 
-		this.blurListener = () => {
+		this.blurListener = (e) => {
 			this.$root.$emit('blurEvent', e)
 			this.dispatch('escapeState')
 		}

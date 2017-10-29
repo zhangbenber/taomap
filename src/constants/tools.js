@@ -3,5 +3,6 @@ export default [
 	{ name: 'Rectangle Tool', icon: '\ueb52', shotcut: 'u', id: 'rect' },
 	{ name: 'Polygon Tool', icon: '\ue915', shotcut: 'p', id: 'poly' },
 	{ name: 'Slice Tool', icon: '\ue667', shotcut: 'c', id: 'slice' },
-	{ name: 'Zoom Tool', icon: '\ue600', shotcut: 'z', id: 'zoom' }
+	{ name: 'Zoom Tool', icon: '\ue600', shotcut: 'z', id: 'zoom' },
+	{ name: 'Hand Tool', icon: '\ue6b5', shotcut: 'h', id: 'hand' }
 ]

@@ -6,10 +6,8 @@
 					height: `${(image.height * origin.scale < viewport.height) ? 1 : image.height * origin.scale + 50}px`}">
 			</div>
 		</div>
-		<div :class="['box', `t-${store.activeTool}`, {
-				hand: this.store.auxKey.space,
-				grabbing: this.store.auxKey.space && doc.mouse.isDown
-			}]" v-if="viewport && image" :style="{
+		<div :class="['box', `cursor-${doc.mouse.cursor}`]"
+			v-if="viewport && image" :style="{
 				width: `${viewport.width}px`,
 				height: `${viewport.height}px`
 			}" @mouseleave="dispatch('mouse', null)">
@@ -58,20 +56,16 @@ export default {
 				isDown = false
 			}
 			this.dispatch('mouse', cord, isDown)
-
-			if (mouse.isDown && auxKey.space) {
-				this.$refs.scroll.scrollLeft -= dx
-				this.$refs.scroll.scrollTop -= dy
-			}
+			this.$root.$emit('mouseEvent', e, this.pos, [dx, dy])
 		}
 	},
 
 	mounted() {
-		this.$root.$on('keyEvent', (e) => {
-			if (e.type === 'keydown') {
-				if (e.keyCode === 187) {
+		this.$root.$on('keyEvent', (e, isDown, code) => {
+			if (isDown) {
+				if (code === 187) {
 					this.zoom('in')
-				} else if (e.keyCode === 189) {
+				} else if (code === 189) {
 					this.zoom('out')
 				}
 			}
@@ -80,6 +74,7 @@ export default {
 		this.$root.$on('resizeEvent', (e) => {
 			this.resize()
 		})
+		this.$root.workarea = this
 
 		this.resize()
 	},
@@ -87,6 +82,7 @@ export default {
 	beforeDestroy() {
 		this.$root.$off('keyEvent')
 		this.$root.$off('resizeEvent')
+		this.$root.workarea = null
 	}
 }
 </script>
@@ -99,7 +95,10 @@ export default {
 		background: @majorBackground;
 	}
 	.box {
-		&.t-poly, &.t-rect { cursor: crosshair; }
+		&.cursor-hand { cursor: grab; }
+		&.cursor-hand-down { cursor: grabbing; }
+		&.cursor-zoom-in { cursor: zoom-in; }
+		&.cursor-zoom-out { cursor: zoom-out; }
 		&.hand { cursor: grab; }
 		&.grabbing { cursor: grabbing; }
 	}
