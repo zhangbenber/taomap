@@ -1,10 +1,20 @@
 import clone from 'deep-clone'
 
 let newDocument = () => ({
-	mouseCord: null,
 	history: [],
 	historyStep: -1,
-	state: {},
+	state: {
+		image: null,
+		maps: [],
+		slices: []
+	},
+	mouse: {
+		onScreen: false,
+		isDown: false,
+		cord: null,
+		offset: [0, 0],
+		snapped: [false, false]
+	},
 	action: null
 })
 
@@ -16,12 +26,41 @@ let store = {
 }
 
 let actions = {
-	changeTool(tool) {
-		this.store.activeTool = tool
-	},
-
 	auxKey(key, isDown) {
 		this.$set(this.store.auxKey, key, isDown)
+	},
+
+	escapeState() {
+		this.dispatch('mouse', null)
+		Object.keys(this.store.auxKey).forEach(key => {
+			this.$set(this.store.auxKey, key, false)
+		})
+	},
+
+	mouse(cord, isDown) {
+		let { mouse } = this.doc
+		if (!cord) {
+			mouse.onScreen = false
+		} else {
+			mouse.onScreen = true
+			mouse.cord = cord
+		}
+		if (isDown !== undefined) {
+			mouse.isDown = isDown
+		} else {
+			mouse.offset = [0, 0]
+			mouse.snapped = [false, false]
+		}
+	},
+
+	adjustCursor(offset) {
+		let { mouse } = this.doc
+		mouse.offset = mouse.offset.map((o, i) => Math.min(Math.max(o + offset[i], -5), 5))
+		mouse.snapped = [false, false]
+	},
+
+	changeTool(tool) {
+		this.store.activeTool = tool
 	},
 
 	browseImage() {

@@ -4,7 +4,7 @@
 			<div class="box" v-if="viewport && image" :style="{
 					width: `${viewport.width}px`,
 					height: `${viewport.height}px`
-				}" v-show="!!pos">
+				}" v-show="mouse.onScreen">
 				<canvas :width="viewport.width" :height="viewport.height"
 					ref="canvas" />
 				<canvas :width="viewport.width" :height="viewport.height"
@@ -14,9 +14,9 @@
 						left: `${~~(viewport.width / 2 - 50)}px`,
 						top: `${~~(viewport.height / 2 - 50)}px`,
 						transform: `translate(${
-							targetOffset[0] * origin.scale
+							mouse.offset[0] * origin.scale
 						}px, ${
-							targetOffset[1] * origin.scale
+							mouse.offset[1] * origin.scale
 						}px)`
 					}" />
 			</div>
@@ -34,19 +34,17 @@ export default {
 	name: 'ExactView',
 	mixins: [Painter],
 
-	props: {
-		pos: Array
-	},
-
-	data: () => ({
-		targetOffset: [0, 0]
-	}),
-
 	methods: {
-		drawTarget(offset = [0, 0], snapped = [false, false]) {
-			let target = this.$refs.target.getContext('2d')
-			target.lineCap = 'round'
+		drawTarget() {
+			let offset = this.mouse.offset
+
+			let element = this.$refs.target
+			if (!element) {
+				return
+			}
+			let target = element.getContext('2d')
 			
+			target.lineCap = 'round'
 			let arr = [
 				[50, 0, 50, 100],
 				[0, 50, 100, 50]
@@ -69,11 +67,9 @@ export default {
 				target.beginPath()
 				target.moveTo(i[0], i[1])
 				target.lineTo(i[2], i[3])
-				target.strokeStyle = snapped[index % 2] ? '#c00' : '#000'
+				target.strokeStyle = this.mouse.snapped[index % 2] ? '#c00' : '#000'
 				target.stroke()
 			})
-
-			this.targetOffset = offset
 		},
 
 		afterResize() {
@@ -111,8 +107,23 @@ export default {
 		}
 	},
 
+	computed: {
+		mouse() {
+			return this.doc.mouse
+		},
+		pos() {
+			return this.mouse.cord
+		},
+		targetFlag() {
+			return [...this.mouse.offset, ...this.mouse.snapped]
+		}
+	},
+
 	mounted() {
 		this.origin.scale = 15
+		this.$nextTick(() => {
+			this.resize()
+		})
 	},
 	
 	watch: {
@@ -124,7 +135,9 @@ export default {
 			origin.x = -origin.scale * p[0] + viewport.width / 2
 			origin.y = -origin.scale * p[1] + viewport.height / 2
 			this.repaint()
-		}
+		},
+
+		targetFlag: function() { this.drawTarget() },
 	}
 }
 </script>
@@ -151,7 +164,7 @@ export default {
 	}
 	.target {
 		opacity: .5;
-		transition: transform .1s;
+		transition: transform .075s;
 	}
 	.load {
 		position: relative;

@@ -19,12 +19,11 @@ export default {
 	},
 	
 	mounted() {
-		this.keyboardAction = (e) => {
+		this.keyboardListener = (e) => {
 			let isDown = (e.type === 'keydown')
 			let code = e.keyCode
 			let char = String.fromCharCode(code).toLowerCase()
 			
-			console.log(code)
 			let auxKey = auxKeys[code]
 			if (auxKey) {
 				this.dispatch('auxKey', auxKey, isDown)
@@ -48,18 +47,30 @@ export default {
 					let tool = tools.find(i => i.shotcut == char)
 					if (tool) {
 						this.dispatch('changeTool', tool.id)
+					} else {
+						let direction = code - 37
+						let offset = [[-1, 0], [0, -1], [1, 0], [0, 1]][direction]
+						if (offset) {
+							this.dispatch('adjustCursor', offset)
+						}
 					}
 				}
 			}
 		}
 
-		window.addEventListener('keydown', this.keyboardAction)
-		window.addEventListener('keyup', this.keyboardAction)
+		this.blurListener = () => {
+			this.dispatch('escapeState')
+		}
+
+		window.addEventListener('keydown', this.keyboardListener)
+		window.addEventListener('keyup', this.keyboardListener)
+		window.addEventListener('blur', this.blurListener)
 	},
 
 	beforeDestroy() {
-		window.removeEventListener('keydown', this.keyboardAction)
-		window.removeEventListener('keyup', this.keyboardAction)
+		window.removeEventListener('keydown', this.keyboardListener)
+		window.removeEventListener('keyup', this.keyboardListener)
+		window.removeEventListener('blur', this.blurListener)
 	},
 
 }

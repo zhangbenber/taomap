@@ -5,7 +5,7 @@
 		</div>
 		<div class="split split-v"></div>		
 		<div class="workarea">
-			<Workarea :image="image" @move="mouseCord = $event" />
+			<Workarea />
 		</div>
 		<div class="split split-v">
 
@@ -17,7 +17,7 @@
 					{ label: 'History', slot: 'history' }
 				]">
 					<template slot="exact-view">
-						<ExactView :image="image" :pos="mouseCord" />
+						<ExactView />
 					</template>
 					<template slot="history">
 						<History />
@@ -52,14 +52,7 @@ export default {
 	},
 
 	data: () => ({
-		mouseCord: null
-	}),
-
-	computed: {
-		image() {
-			return this.doc.state.image || null
-		}
-	},
+	})
 }
 </script>
 

@@ -8,12 +8,11 @@
 		</div>
 		<div :class="['box', {
 				hand: this.store.auxKey.space,
-				grabbing: this.store.auxKey.space && mouse.isDown
+				grabbing: this.store.auxKey.space && doc.mouse.isDown
 			}]" v-if="viewport && image" :style="{
 				width: `${viewport.width}px`,
 				height: `${viewport.height}px`
-			}"
-			@mouseenter="mouse.onScreen = true" @mouseleave="mouse.onScreen = false">
+			}" @mouseleave="dispatch('mouse', null)">
 			<canvas :width="viewport.width" :height="viewport.height" ref="canvas"
 				@mousedown="mouseAction" @mousemove="mouseAction" @mouseup="mouseAction" />
 		</div>
@@ -33,47 +32,36 @@ export default {
 	mixins: [Painter],
 
 	data: () => ({
-		mouse: {
-			onScreen: false,
-			isDown: false,
-			pos: [0, 0]
-		}
+		pos: [0, 0]
 	}),
 
 	methods: {
 		mouseAction(e) {
-			let { viewport, origin, image, mouse, store } = this
+			let { viewport, image, doc, store, origin } = this
 			let { auxKey } = store
+			let { mouse } = doc
 
 			let cord = [
 				Math.round((e.offsetX - origin.x) / origin.scale),
 				Math.round((e.offsetY - origin.y) / origin.scale)
 			]
 
-			let dx = e.offsetX - mouse.pos[0]
-			let dy = e.offsetY - mouse.pos[1]
-			mouse.pos[0] = e.offsetX
-			mouse.pos[1] = e.offsetY
+			let dx = e.offsetX - this.pos[0]
+			let dy = e.offsetY - this.pos[1]
 
-			this.$emit('move', cord)
+			this.pos = [e.offsetX, e.offsetY]
 			
+			let isDown
 			if (e.type === 'mousedown') {
-				mouse.isDown = true
+				isDown = true
 			} else if (e.type === 'mouseup') {
-				mouse.isDown = false
+				isDown = false
 			}
+			this.dispatch('mouse', cord, isDown)
 
-			if (e.type === 'mousemove' && mouse.isDown && auxKey.space) {
+			if (mouse.isDown && auxKey.space) {
 				this.$refs.scroll.scrollLeft -= dx
 				this.$refs.scroll.scrollTop -= dy
-			}
-		}
-	},
-
-	watch: {
-		'mouse.onScreen': function(on) {
-			if (!on) {
-				this.$emit('move', null)
 			}
 		}
 	},

@@ -1,8 +1,4 @@
 export default {
-	props: {
-		image: HTMLImageElement
-	},
-
 	data: () => ({
 		viewport: null,
 		origin: {
@@ -51,10 +47,15 @@ export default {
 		},
 
 		zoom(to) {
-			let { viewport, origin, image, mouse } = this
-			let zoomPos = mouse.onScreen ? mouse.pos : [viewport.width / 2, viewport.height / 2]
-			let zoomCord = [(zoomPos[0] - origin.x) / origin.scale, (zoomPos[1] - origin.y) / origin.scale]
-
+			let { viewport, origin, image, doc } = this
+			let { mouse } = doc
+			let zoomPos = mouse.onScreen ?
+				[mouse.cord[0] * origin.scale + origin.x, mouse.cord[1] * origin.scale + origin.y] :
+				[viewport.width / 2, viewport.height / 2]
+			let zoomCord = [
+				(zoomPos[0] - origin.x) / origin.scale,
+				(zoomPos[1] - origin.y) / origin.scale
+			]
 			if (typeof to === 'number') {
 				origin.scale = to
 			} else {
@@ -73,8 +74,8 @@ export default {
 				origin.scale = result || origin.scale
 			}
 			this.$nextTick(() => {
-				this.$refs.scroll.scrollLeft = Math.round(zoomCord[0] * origin.scale - zoomPos[0])
-				this.$refs.scroll.scrollTop = Math.round(zoomCord[1] * origin.scale - zoomPos[1])
+				this.$refs.scroll.scrollLeft = Math.round(zoomCord[0] * origin.scale - zoomPos[0] + 25)
+				this.$refs.scroll.scrollTop = Math.round(zoomCord[1] * origin.scale - zoomPos[1] + 25)
 				this.resize()
 			})
 		},
@@ -106,6 +107,12 @@ export default {
 					this.draw()
 				}
 			})
+		}
+	},
+
+	computed: {
+		image() {
+			return this.doc.state.image
 		}
 	},
 

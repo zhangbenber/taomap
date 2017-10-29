@@ -1,6 +1,6 @@
 export default [
 	{
-		key: ['ctrl', 'o'],
+		key: ['ctrl', 'i'],
 		callback: function () {
 			this.dispatch('browseImage')
 		}
