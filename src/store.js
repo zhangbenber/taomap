@@ -1,4 +1,5 @@
 import clone from 'deep-clone'
+import deepExtend from 'deep-extend'
 import * as toolHandlers from './handlers/tool'
 
 let newDocument = () => ({
@@ -23,7 +24,13 @@ let newDocument = () => ({
 		maps: [],
 		slices: []
 	},
-	action: null
+	interaction: voidInteraction()
+})
+
+let voidInteraction = () => ({
+	type: null,
+	maps: [],
+	slices: [],
 })
 
 let store = {
@@ -93,6 +100,11 @@ let actions = {
 		mouse.snapped = [false, false]
 	},
 
+	updateInteraction(interaction) {
+		this.doc.interaction = deepExtend(voidInteraction(), interaction)
+		this.$root.$emit('repaint')
+	},
+
 	changeTool(tool) {
 		let oldHandler = toolHandlers[this.store.activeTool]
 		if (oldHandler && oldHandler.suspend) {
@@ -148,6 +160,13 @@ let modifiers = {
 			desc: 'Open',
 			icon: '\ue6f0'
 		}
+	},
+
+	submitInteracting(state, meta) {
+		state.maps = state.maps.concat(this.doc.interaction.maps)
+		state.slices = state.slices.concat(this.doc.interaction.slices)
+		this.dispatch('updateInteraction', {})
+		return meta
 	}
 }
 
@@ -172,6 +191,7 @@ export default {
 
 				let { doc } = this
 				let state = clone(doc.state)
+				state.image = doc.state.image
 				doc.history = doc.history.slice(0, ++doc.historyStep)
 				let payload = Array.prototype.slice.call(arguments, 1)
 				payload.unshift(state)

@@ -119,7 +119,7 @@ export default {
 			front.strokeStyle = '#68c'
 			front.fillStyle = 'rgba(102,136,204,.3)'
 			let points = []
-			state.maps.forEach((map, index) => {
+			state.maps.concat(doc.interaction.maps).forEach((map, index) => {
 				let selected = selectedObjects.maps.indexOf(index) > -1
 				front.beginPath()
 				map.poly.forEach((p, i) => {
@@ -166,5 +166,13 @@ export default {
 		image: function () {
 			this.resize()
 		}
+	},
+
+	mounted() {
+		this.$root.$on('repaint', this.repaint)
+	},
+
+	beforeDestory() {
+		this.$root.$off('repaint', this.repaint)
 	}
 }

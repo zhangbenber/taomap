@@ -99,12 +99,12 @@ export default {
 		background: @majorBackground;
 	}
 	.box {
+		&.cursor-default { cursor: default; }
+		&.cursor-cross { cursor: crosshair; }
 		&.cursor-hand { cursor: grab; }
 		&.cursor-hand-down { cursor: grabbing; }
 		&.cursor-zoom-in { cursor: zoom-in; }
 		&.cursor-zoom-out { cursor: zoom-out; }
-		&.hand { cursor: grab; }
-		&.grabbing { cursor: grabbing; }
 	}
 	canvas {
 		display: block;
