@@ -1,8 +1,10 @@
-let mouseEvent = function (e, pos, delta) {
-	let { doc, store } = this
-	let { mouse } = doc
+let mouseEvent = function (e, isDown, pos, delta) {
+	let { mouse } = this.doc
 
-	this.dispatch('setCursor', mouse.isDown ? 'hand-down' : 'hand')
+	if (isDown === true || isDown === false) {
+		this.dispatch('setCursor', isDown ? 'hand-down' : 'hand')
+	}
+
 	if (mouse.isDown) {
 		if (!this.$root.workarea) {
 			return
@@ -15,12 +17,10 @@ let mouseEvent = function (e, pos, delta) {
 
 export default {
 	active() {
-		console.log('Hand active')
 		this.dispatch('setCursor', 'hand')
 		this.$root.$on('mouseEvent', mouseEvent)
 	},
 	deactive() {
-		console.log('Hand deactive')
 		this.$root.$off('mouseEvent', mouseEvent)
 	}
 }

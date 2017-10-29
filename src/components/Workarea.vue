@@ -56,7 +56,7 @@ export default {
 				isDown = false
 			}
 			this.dispatch('mouse', cord, isDown)
-			this.$root.$emit('mouseEvent', e, this.pos, [dx, dy])
+			this.$root.$emit('mouseEvent', e, isDown, this.pos, [dx, dy])
 		}
 	},
 

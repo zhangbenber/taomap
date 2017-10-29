@@ -34,6 +34,9 @@ let actions = {
 		}
 		this.$set(this.store.auxKey, key, isDown)
 		if (key == 'space') {
+			if (this.store.activeTool == 'hand') {
+				return
+			}
 			let oldHandler = toolHandlers[this.store.activeTool]
 			if (isDown) {
 				if (oldHandler && oldHandler.suspend) {

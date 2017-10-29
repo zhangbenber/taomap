@@ -1,9 +1,8 @@
-let mouseEvent = function (e, pos, delta) {
-	let { doc, store } = this
-	let { mouse } = doc
+let mouseEvent = function (e, isDown) {
+	let { store } = this
 	let { auxKey } = store
 
-	if (e.type == 'mousedown') {
+	if (isDown) {
 		if (!this.$root.workarea) {
 			return
 		}
