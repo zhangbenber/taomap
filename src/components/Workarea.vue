@@ -6,7 +6,7 @@
 					height: `${(image.height * origin.scale < viewport.height) ? 1 : image.height * origin.scale + 50}px`}">
 			</div>
 		</div>
-		<div :class="['box', {
+		<div :class="['box', `t-${store.activeTool}`, {
 				hand: this.store.auxKey.space,
 				grabbing: this.store.auxKey.space && doc.mouse.isDown
 			}]" v-if="viewport && image" :style="{
@@ -67,7 +67,7 @@ export default {
 	},
 
 	mounted() {
-		this.keyboardAction = (e) => {
+		this.$root.$on('keyEvent', (e) => {
 			if (e.type === 'keydown') {
 				if (e.keyCode === 187) {
 					this.zoom('in')
@@ -75,22 +75,18 @@ export default {
 					this.zoom('out')
 				}
 			}
-		}
+		})
 
-		this.resizeListener = (e) => {
+		this.$root.$on('resizeEvent', (e) => {
 			this.resize()
-		}
+		})
 
-		window.addEventListener('keydown', this.keyboardAction)
-		window.addEventListener('keyup', this.keyboardAction)
-		window.addEventListener('resize', this.resizeListener)
 		this.resize()
 	},
 
 	beforeDestroy() {
-		window.removeEventListener('keydown', this.keyboardAction)
-		window.removeEventListener('keyup', this.keyboardAction)
-		window.removeEventListener('resize', this.resizeListener)
+		this.$root.$off('keyEvent')
+		this.$root.$off('resizeEvent')
 	}
 }
 </script>
@@ -103,13 +99,9 @@ export default {
 		background: @majorBackground;
 	}
 	.box {
-		cursor: crosshair;
-		&.hand {
-			cursor: grab;
-		}
-		&.grabbing {
-			cursor: grabbing;
-		}
+		&.t-poly, &.t-rect { cursor: crosshair; }
+		&.hand { cursor: grab; }
+		&.grabbing { cursor: grabbing; }
 	}
 	canvas {
 		display: block;

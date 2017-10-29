@@ -41,6 +41,7 @@ let actions = {
 		let { mouse } = this.doc
 		if (!cord) {
 			mouse.onScreen = false
+			mouse.isDown = false
 		} else {
 			mouse.onScreen = true
 			mouse.cord = cord

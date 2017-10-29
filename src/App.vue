@@ -20,6 +20,8 @@ export default {
 	
 	mounted() {
 		this.keyboardListener = (e) => {
+			this.$root.$emit('keyEvent', e)
+
 			let isDown = (e.type === 'keydown')
 			let code = e.keyCode
 			let char = String.fromCharCode(code).toLowerCase()
@@ -59,18 +61,25 @@ export default {
 		}
 
 		this.blurListener = () => {
+			this.$root.$emit('blurEvent', e)
 			this.dispatch('escapeState')
+		}
+
+		this.resizeListener = (e) => {
+			this.$root.$emit('resizeEvent', e)
 		}
 
 		window.addEventListener('keydown', this.keyboardListener)
 		window.addEventListener('keyup', this.keyboardListener)
 		window.addEventListener('blur', this.blurListener)
+		window.addEventListener('resize', this.resizeListener)
 	},
 
 	beforeDestroy() {
 		window.removeEventListener('keydown', this.keyboardListener)
 		window.removeEventListener('keyup', this.keyboardListener)
 		window.removeEventListener('blur', this.blurListener)
+		window.removeEventListener('resize', this.resizeListener)
 	},
 
 }
