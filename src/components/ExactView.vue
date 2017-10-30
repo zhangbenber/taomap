@@ -18,7 +18,7 @@
 						}px, ${
 							mouse.offset[1] * origin.scale
 						}px)`
-					}" />
+					}" v-show="doc.mouse.showTarget" />
 			</div>
 			<div  v-else class="load f-tac">
 				<p class="f-sub">{{ i18n('exactview.noimage') }}</p>

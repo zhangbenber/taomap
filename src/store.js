@@ -7,9 +7,7 @@ let newDocument = () => ({
 	historyStep: -1,
 	state: {
 		image: null,
-		maps: [{
-			poly: [[10, 20], [30, 20], [20, 40]]
-		}],
+		maps: [],
 		slices: []
 	},
 	mouse: {
@@ -18,7 +16,9 @@ let newDocument = () => ({
 		cord: null,
 		offset: [0, 0],
 		snapped: [false, false],
-		cursor: ''
+		cursor: '',
+		showTarget: false,
+		hide: false
 	},
 	selectedObjects: {
 		maps: [],
@@ -87,6 +87,7 @@ let actions = {
 		} else {
 			mouse.offset = [0, 0]
 			mouse.snapped = [false, false]
+			mouse.hide = false
 		}
 	},
 
@@ -94,14 +95,32 @@ let actions = {
 		this.doc.mouse.cursor = cursor
 	},
 
-	adjustCursor(offset) {
-		let { mouse } = this.doc
-		mouse.offset = mouse.offset.map((o, i) => Math.min(Math.max(o + offset[i], -5), 5))
-		mouse.snapped = [false, false]
+	showTarget(show = true) {
+		this.doc.mouse.showTarget = show
 	},
 
-	updateInteraction(interaction) {
+	adjustTarget(offset) {
+		let { mouse } = this.doc
+		if (!mouse.showTarget) {
+			return
+		}
+		mouse.offset = mouse.offset.map((o, i) => Math.min(Math.max(o + offset[i], -5), 5))
+		mouse.snapped = [false, false]
+		mouse.hide = true
+	},
+
+	updateInteraction(interaction = {}) {
 		this.doc.interaction = deepExtend(voidInteraction(), interaction)
+		this.$root.$emit('repaint')
+	},
+
+	selectObjects(objects = {}, replace = false) {
+		let selected = this.doc.selectedObjects
+		Object.keys(selected).forEach(key => {
+			selected[key] = replace ?
+			objects[key] || [] :
+			Array.from(new Set(selected[key].concat(objects[key] || [])))
+		})
 		this.$root.$emit('repaint')
 	},
 
@@ -165,7 +184,7 @@ let modifiers = {
 	submitInteracting(state, meta) {
 		state.maps = state.maps.concat(this.doc.interaction.maps)
 		state.slices = state.slices.concat(this.doc.interaction.slices)
-		this.dispatch('updateInteraction', {})
+		this.dispatch('updateInteraction')
 		return meta
 	}
 }

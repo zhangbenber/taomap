@@ -6,7 +6,7 @@
 					height: `${(image.height * origin.scale < viewport.height) ? 1 : image.height * origin.scale + 50}px`}">
 			</div>
 		</div>
-		<div :class="['box', `cursor-${doc.mouse.cursor}`]"
+		<div :class="['box', `cursor-${doc.mouse.cursor}`, {'no-cursor': doc.mouse.hide}]"
 			v-if="viewport && image" :style="{
 				width: `${viewport.width}px`,
 				height: `${viewport.height}px`
@@ -110,6 +110,7 @@ export default {
 		&.cursor-hand-down { cursor: grabbing; }
 		&.cursor-zoom-in { cursor: zoom-in; }
 		&.cursor-zoom-out { cursor: zoom-out; }
+		&.no-cursor { cursor: none; }
 	}
 	canvas {
 		display: block;

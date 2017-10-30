@@ -1,4 +1,6 @@
 export default {
+	'__rtl__': true,
+	
 	'welcome.start': 'تبدأ من تحميل صورة جديدة',
 	'welcome.import': 'استيراد الصور',
 	'welcome.open': 'افتح مشروع موجود',

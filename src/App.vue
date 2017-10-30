@@ -1,5 +1,5 @@
 <template>
-	<div id="app" dir="rtl">
+	<div id="app" :dir="i18n('__rtl__') === true ? 'rtl' : 'ltr'">
 		<Editor :doc="doc" />
 	</div>
 </template>
@@ -53,7 +53,7 @@ export default {
 						let direction = code - 37
 						let offset = [[-1, 0], [0, -1], [1, 0], [0, 1]][direction]
 						if (offset) {
-							this.dispatch('adjustCursor', offset)
+							this.dispatch('adjustTarget', offset)
 						}
 					}
 				}

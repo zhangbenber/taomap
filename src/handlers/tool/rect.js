@@ -1,16 +1,37 @@
+import * as polygon from '@/utils/polygon'
+
 let interaction = null
+let mapArea = -1
 
 let mouseEvent = function (e, isDown, pos, delta) {
 	let { mouse } = this.doc
 
 	let mouseCord = mouse.cord.map((v, i) => v + mouse.offset[i])
 
+	if (!this.doc.state.maps[mapArea] || !polygon.hintTest(this.doc.state.maps[mapArea], mouse.cord)) {
+		let newMapArea = polygon.findIndex(this.doc.state.maps, mouse.cord)
+		if (newMapArea != mapArea) {
+			if (newMapArea > -1) {
+				this.dispatch('setCursor', 'default')
+			} else {
+				this.dispatch('setCursor', 'cross')
+			}
+			mapArea = newMapArea
+		}
+	}
+
 	if (isDown) {
-		let x = mouse.cord[0], y = mouse.cord[1]
+		if (mapArea > -1) {
+			this.dispatch('selectObjects', {
+				maps: [mapArea]
+			}, true)
+			return
+		}
 		interaction = {
 			type: 'newRect',
-			startCord: [x, y]
+			startCord: mouseCord
 		}
+		this.dispatch('selectObjects', {}, true)
 	}
 
 	if (mouse.isDown) {
@@ -35,24 +56,38 @@ let mouseEvent = function (e, isDown, pos, delta) {
 	}
 
 	if (isDown === false) {
-		if (interaction) {
-			this.commit('submitInteracting', {
-				desc: 'history.newrect',
-				icon: '\ueb52'
-			})
-			interaction = null
+		switch (interaction && interaction.type) {
+			case 'newRect':
+				let rect = interaction.maps[0].rect
+				if (!rect || rect[0] == rect[2] || rect[1] == rect[3]) {
+					this.dispatch('updateInteraction')
+				} else {
+					this.commit('submitInteracting', {
+						desc: 'history.newrect',
+						icon: '\ueb52'
+					})
+					this.dispatch('selectObjects', {
+						maps: [this.doc.state.maps.length - 1]
+					})
+				}
+				interaction = null
+				break
 		}
 	}
 
 }
 
 let keyEvent = function (e, isDown, code, char) {
-
+	if (code) {
+		mouseEvent.call(this)
+	}
 }
 
 export default {
 	active() {
 		this.dispatch('setCursor', 'cross')
+		this.dispatch('showTarget', true)
+		mapArea = -1
 		this.$root.$on('mouseEvent', mouseEvent)
 		this.$root.$on('keyEvent', keyEvent)
 	},

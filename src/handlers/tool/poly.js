@@ -9,6 +9,7 @@ let keyEvent = function (e, isDown, code, char) {
 export default {
 	active() {
 		this.dispatch('setCursor', 'cross')
+		this.dispatch('showTarget', true)
 		this.$root.$on('mouseEvent', mouseEvent)
 		this.$root.$on('keyEvent', keyEvent)
 	},

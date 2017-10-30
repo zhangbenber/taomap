@@ -16,6 +16,7 @@ let mouseEvent = function (e, isDown, pos, delta) {
 export default {
 	active() {
 		this.dispatch('setCursor', 'hand')
+		this.dispatch('showTarget', false)
 		this.$root.$on('mouseEvent', mouseEvent)
 	},
 	deactive() {

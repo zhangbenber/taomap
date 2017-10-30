@@ -87,7 +87,7 @@ export default {
 
 		draw() {
 			let toCanvasCord = p => p.map((v, i) =>
-				Math.round(v * this.origin.scale + this.origin[['x', 'y'][i]])
+				Math.floor(v * this.origin.scale + this.origin[['x', 'y'][i]])
 					+ (this.origin.scale >= 3 ? 0 : 0.5)
 			)
 
