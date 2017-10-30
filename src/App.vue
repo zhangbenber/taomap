@@ -7,9 +7,8 @@
 <script>
 import Editor from './components/Editor'
 
-import tools from './constants/tools'
 import auxKeys from './constants/auxKeys'
-import shotcuts from './constants/shotcuts'
+import globalHandler from './handlers/global'
 
 export default {
 	name: 'App',
@@ -32,31 +31,7 @@ export default {
 			}
 
 			if (isDown) {
-				let auxCount = Object.values(this.store.auxKey).filter(i => i).length
-				if (auxCount > 0) {
-					let shotcut = shotcuts.find(item => {
-						let aux = item.key.slice(0, -1)
-						let primary = item.key[item.key.length - 1]
-						return (primary === char)
-							&& (aux.length == auxCount)
-							&& (!aux.some(i => !this.store.auxKey[i]))
-					})
-					if (shotcut) {
-						e.preventDefault()
-						shotcut.callback.call(this)
-					}
-				} else {
-					let tool = tools.find(i => i.shotcut === char)
-					if (tool) {
-						this.dispatch('changeTool', tool.id)
-					} else {
-						let direction = code - 37
-						let offset = [[-1, 0], [0, -1], [1, 0], [0, 1]][direction]
-						if (offset) {
-							this.dispatch('adjustTarget', offset)
-						}
-					}
-				}
+
 			}
 
 			this.$root.$emit('keyEvent', e, isDown, code, char)
@@ -75,6 +50,8 @@ export default {
 		window.addEventListener('keyup', this.keyboardListener)
 		window.addEventListener('blur', this.blurListener)
 		window.addEventListener('resize', this.resizeListener)
+		globalHandler.active && globalHandler.active.call(this)
+		this.dispatch('changeTool', this.store.activeTool)
 	},
 
 	beforeDestroy() {
@@ -82,6 +59,9 @@ export default {
 		window.removeEventListener('keyup', this.keyboardListener)
 		window.removeEventListener('blur', this.blurListener)
 		window.removeEventListener('resize', this.resizeListener)
+		this.dispatch('changeTool', this.store.activeTool)
+		globalHandler.suspend && globalHandler.suspend.call(this)
+		globalHandler.deactive && globalHandler.deactive.call(this)
 	},
 
 }

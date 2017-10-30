@@ -12,3 +12,20 @@ export function findIndex(polygons, point) {
 	return reverseIndex < 0 ? -1 : (polygons.length - reverseIndex - 1)
 }
 
+export function hintMap(doc, index, point) {
+	let map = doc.state.maps[index]
+	if (!map) {
+		return false
+	}
+	return hintTest(map, point)
+}
+
+export function hintMaps(doc, point) {
+	return findIndex(doc.state.maps, point)
+}
+
+export function hintSelectedMaps(doc, point) {
+	return findIndex(doc.state.maps.filter(
+		(p, i) => doc.selectedObjects.maps.indexOf(i) > -1
+	), point)
+}

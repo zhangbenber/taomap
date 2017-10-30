@@ -94,6 +94,16 @@ export default {
 			let { viewport, origin, image, doc } = this
 			let { selectedObjects, state } = doc
 
+			if (!this.$refs.back) {
+				this.dirty = false
+				this.$nextTick(() => {
+					if (this.dirty) {
+						this.draw()
+					}
+				})
+				return
+			}
+
 			// Draw image on `back`
 
 			let back = this.$refs.back.getContext('2d')

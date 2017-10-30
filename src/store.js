@@ -186,6 +186,16 @@ let modifiers = {
 		state.slices = state.slices.concat(this.doc.interaction.slices)
 		this.dispatch('updateInteraction')
 		return meta
+	},
+
+	deleteSelectedMaps(state) {
+		let selected = this.doc.selectedObjects.maps
+		state.maps = state.maps.map((map, i) =>
+			selected.indexOf(i) > -1 ? null : map).filter(i => i)
+		this.doc.selectedObjects.maps = []
+		return {
+			desc: 'history.delmap'
+		}
 	}
 }
 

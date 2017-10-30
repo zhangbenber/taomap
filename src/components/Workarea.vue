@@ -62,26 +62,10 @@ export default {
 	},
 
 	mounted() {
-		this.keyEvent = (e, isDown, code) => {
-			if (isDown) {
-				let zooming = {
-					187: 'in',
-					189: 'out',
-					49: 1,
-					48: 'fit'
-				}[code]
-				if (zooming) {
-					this.zoom(zooming)
-					e.preventDefault()
-				}
-			}
-		}
-
 		this.resizeEvent = (e) => {
 			this.resize()
 		}
 
-		this.$root.$on('keyEvent', this.keyEvent)
 		this.$root.$on('resizeEvent', this.resizeEvent)
 		this.$root.workarea = this
 		
@@ -89,7 +73,6 @@ export default {
 	},
 
 	beforeDestroy() {
-		this.$root.$off('keyEvent', this.keyEvent)
 		this.$root.$off('resizeEvent', this.resizeEvent)
 		this.$root.workarea = null
 	}

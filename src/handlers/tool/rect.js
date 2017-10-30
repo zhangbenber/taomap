@@ -4,12 +4,13 @@ let interaction = null
 let mapArea = -1
 
 let mouseEvent = function (e, isDown, pos, delta) {
-	let { mouse } = this.doc
+	let { store, doc } = this
+	let { mouse } = doc
 
 	let mouseCord = mouse.cord.map((v, i) => v + mouse.offset[i])
 
-	if (!this.doc.state.maps[mapArea] || !polygon.hintTest(this.doc.state.maps[mapArea], mouse.cord)) {
-		let newMapArea = polygon.findIndex(this.doc.state.maps, mouse.cord)
+	if (!doc.state.maps[mapArea] || !polygon.hintMap(doc, mapArea, mouse.cord)) {
+		let newMapArea = polygon.hintMaps(doc, mouse.cord)
 		if (newMapArea != mapArea) {
 			if (newMapArea > -1) {
 				this.dispatch('setCursor', 'default')
@@ -22,9 +23,22 @@ let mouseEvent = function (e, isDown, pos, delta) {
 
 	if (isDown) {
 		if (mapArea > -1) {
-			this.dispatch('selectObjects', {
-				maps: [mapArea]
-			}, true)
+			if (store.auxKey.ctrl) {
+				let newMaps = doc.selectedObjects.maps.slice()
+				let oldIndex = newMaps.indexOf(mapArea)
+				if (oldIndex > -1) {
+					newMaps.splice(oldIndex, 1)
+				} else {
+					newMaps.push(mapArea)
+				}
+				this.dispatch('selectObjects', {
+					maps: newMaps
+				}, true)
+			} else {
+				this.dispatch('selectObjects', {
+					maps: [mapArea]
+				}, !store.auxKey.shift)
+			}
 			return
 		}
 		interaction = {
