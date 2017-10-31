@@ -19,5 +19,7 @@ export default {
 
 	'history.import': 'Import Image',
 	'history.newrect': 'Create Rectangle Map Area',
+	'history.delmap': 'Delete Map Area',
+	'history.mpvemap': 'Move Map Area',
 	'history.unknown': '< Unknown >',
 }

@@ -19,5 +19,7 @@ export default {
 
 	'history.import': '导入图像',
 	'history.newrect': '创建矩形热区',
+	'history.delmap': '删除热区',
+	'history.movemap': '移动热区',
 	'history.unknown': '< 未知 >',
 }

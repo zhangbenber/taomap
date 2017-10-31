@@ -135,6 +135,9 @@ export default {
 			front.fillStyle = 'rgba(102,136,204,.3)'
 			let points = []
 			state.maps.concat(doc.interaction.maps).forEach((map, index) => {
+				if (map.hide) {
+					return
+				}
 				let selected = selectedObjects.maps.indexOf(index) > -1
 				front.beginPath()
 				map.poly.forEach((p, i) => {

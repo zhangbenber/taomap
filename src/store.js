@@ -114,6 +114,19 @@ let actions = {
 		this.$root.$emit('repaint')
 	},
 
+	removeSelectedMaps() {
+		let state = this.doc.state
+		let selected = this.doc.selectedObjects.maps
+		this.$set(state, 'maps', state.maps.map((map, i) =>
+			selected.indexOf(i) > -1 ? null : map).filter(i => i)
+		)
+		this.doc.selectedObjects.maps = []
+	},
+
+	showAllMaps() {
+		this.doc.state.maps.forEach(map => this.$delete(map, 'hide'))
+	},
+
 	selectObjects(objects = {}, replace = false) {
 		let selected = this.doc.selectedObjects
 		Object.keys(selected).forEach(key => {
@@ -189,10 +202,7 @@ let modifiers = {
 	},
 
 	deleteSelectedMaps(state) {
-		let selected = this.doc.selectedObjects.maps
-		state.maps = state.maps.map((map, i) =>
-			selected.indexOf(i) > -1 ? null : map).filter(i => i)
-		this.doc.selectedObjects.maps = []
+		this.dispatch('removeSelectedMaps')
 		return {
 			desc: 'history.delmap'
 		}

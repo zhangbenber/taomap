@@ -1,3 +1,4 @@
+import clone from 'deep-clone'
 import * as polygon from '@/utils/polygon'
 
 let interaction = null
@@ -35,22 +36,38 @@ let mouseEvent = function (e, isDown, pos, delta) {
 					maps: newMaps
 				}, true)
 			} else {
-				this.dispatch('selectObjects', {
-					maps: [mapArea]
-				}, !store.auxKey.shift)
+				if (doc.selectedObjects.maps.indexOf(mapArea) < 0) {
+					this.dispatch('selectObjects', {
+						maps: [mapArea]
+					}, !store.auxKey.shift)
+				}
 			}
-			return
+			if (!store.auxKey.ctrl && !store.auxKey.shift && doc.selectedObjects.maps.length) {
+				let origin = []
+				doc.state.maps.forEach((map, i) => {
+					if (doc.selectedObjects.maps.indexOf(i) > -1) {
+						origin.push(clone(map))
+						this.$set(map, 'hide', true)
+					}
+				})
+				interaction = {
+					type: 'moveMaps',
+					startCord: mouseCord,
+					origin
+				}
+			}
+		} else {
+			this.dispatch('selectObjects', {}, true)
+			interaction = {
+				type: 'newRect',
+				startCord: mouseCord
+			}
 		}
-		interaction = {
-			type: 'newRect',
-			startCord: mouseCord
-		}
-		this.dispatch('selectObjects', {}, true)
 	}
 
 	if (mouse.isDown) {
 		switch (interaction && interaction.type) {
-			case 'newRect':
+			case 'newRect': {
 				let startCord = interaction.startCord
 				let leftTop = [
 					Math.min(interaction.startCord[0], mouseCord[0]),
@@ -66,12 +83,40 @@ let mouseEvent = function (e, isDown, pos, delta) {
 				}]
 				this.dispatch('updateInteraction', interaction)
 				break
+			}
+
+			case 'moveMaps': {
+				let startCord = interaction.startCord
+				let deltaX = mouseCord[0] - startCord[0]
+				let deltaY = mouseCord[1] - startCord[1]
+				interaction.maps = interaction.origin.map(map => {
+					let m = clone(map)
+					if (m.rect) {
+						m.rect[0] += deltaX
+						m.rect[1] += deltaY
+						m.rect[2] += deltaX
+						m.rect[3] += deltaY
+					}else if (m.circle) {
+						m.rect[0] += deltaX
+						m.rect[1] += deltaY
+					}
+					if (m.poly) {
+						m.poly.forEach(v => {
+							v[0] += deltaX
+							v[1] += deltaY
+						})
+					}
+					return m
+				})
+				this.dispatch('updateInteraction', interaction)
+				break
+			}
 		}
 	}
 
 	if (isDown === false) {
 		switch (interaction && interaction.type) {
-			case 'newRect':
+			case 'newRect': {
 				let rect = interaction.maps[0].rect
 				if (!rect || rect[0] == rect[2] || rect[1] == rect[3]) {
 					this.dispatch('updateInteraction')
@@ -86,6 +131,22 @@ let mouseEvent = function (e, isDown, pos, delta) {
 				}
 				interaction = null
 				break
+			}
+
+			case 'moveMaps': {
+				this.dispatch('removeSelectedMaps')
+				this.commit('submitInteracting', {
+					desc: 'history.movemap',
+					icon: '\ueb52'
+				})
+				this.dispatch('selectObjects', {
+					maps: Array(interaction.maps.length).fill().map(
+						(a, i) => doc.state.maps.length - i - 1
+					)
+				})
+				interaction = null
+				break
+			}
 		}
 	}
 
